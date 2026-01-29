@@ -7,7 +7,7 @@
     <#setting locale="en_US">
 </head>
 <body>
-    <h1>Incubator's GuestBook</h1>
+    <h1>Гостевая книга УЭК</h1>
     <table border=2 class="gb_table">
         <#list notes as note>
             <tr>
@@ -23,7 +23,7 @@
                         </tr>
                          <tr>
                             <td>
-                                ${note.noteDate?string["EEE, MMM dd, yyyy, HH:mm '('zzz')'"]}
+                                ${note.noteDateTime.format('MMM dd, yyyy, HH:mm:ss')}
                             </td>
                         </tr>
                     </table>
@@ -34,7 +34,7 @@
     <div class="form_container">
         <form id=sendMessageForm action="/guestbook/save" method="POST" modelAttribute="note">
             <div class="form_element">
-                <label for="userName" >User Name:</label>
+                <label for="userName" >Имя пользователя:</label>
                 <input type="text" id="userName" name="userName">
             </div>
             <div class="form_element">

@@ -16,21 +16,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation platform('org.junit:junit-bom:6.0.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.26.3'
-    testImplementation 'org.mockito:mockito-core:5.14.2'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
-    testImplementation 'org.springframework:spring-test:6.2.1'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
+    testImplementation 'org.mockito:mockito-core:5.21.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.21.0'
+    testImplementation 'org.springframework:spring-test:7.0.3'
 
-    implementation 'org.springframework:spring-orm:6.2.1'
-    implementation 'org.freemarker:freemarker:2.3.33'
-    implementation 'org.springframework:spring-context-support:6.2.1'
-    implementation 'org.springframework:spring-orm:6.2.1'
-    implementation 'com.h2database:h2:2.3.232'
-    implementation 'org.springframework:spring-webmvc:6.2.1'
-    implementation 'org.hibernate.orm:hibernate-core:6.6.4.Final'
-
+    implementation 'org.springframework:spring-orm:7.0.3'
+    implementation 'org.freemarker:freemarker:2.3.34'
+    implementation 'org.springframework:spring-context-support:7.0.3'
+    implementation 'com.h2database:h2:2.4.240'
+    implementation 'org.springframework:spring-webmvc:7.0.3'
+    implementation 'org.hibernate.orm:hibernate-core:7.2.2.Final'
+    implementation group: 'no.api.freemarker', name: 'freemarker-java8', version: '3.0.3'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
 }
@@ -41,7 +40,7 @@ test {
 
 tasks.register('buildAndCopyWarToApache', Copy) {
     from war // shortcut for createJar.outputs.files
-    into "/opt/apache-tomcat-10.1.26/webapps"
+    into "/opt/apache-tomcat-11.0.18/webapps"
     dependsOn(war)
 }
 

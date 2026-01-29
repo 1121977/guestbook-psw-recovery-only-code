@@ -2,6 +2,7 @@ package ru.incubator.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,11 +14,13 @@ public class Note {
     private String userName;
     @Column(length = 1_000)
     private String message;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date noteDate;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private Date noteDate;
+    private LocalDateTime noteDateTime;
 
     public Note(){
-        this.noteDate = new Date();
+//        this.noteDate = new Date();
+        this.noteDateTime = LocalDateTime.now();
     }
 
     public Note(String userName, String message){
@@ -50,11 +53,11 @@ public class Note {
         this.message = message;
     }
 
-    public Date getNoteDate() {
-        return noteDate;
+    public LocalDateTime getNoteDateTime() {
+        return noteDateTime;
     }
 
-    public void setNoteDate(Date noteDate) {
-        this.noteDate = noteDate;
+    public void setNoteDateTime(LocalDateTime noteDate) {
+        this.noteDateTime = noteDate;
     }
 }
