@@ -1,5 +1,6 @@
 package ru.incubator;
 
+import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,8 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.orm.jpa.hibernate.HibernateTransactionManager;
 import org.springframework.orm.jpa.hibernate.LocalSessionFactoryBean;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.incubator.dao.NoteDao;
@@ -56,6 +59,7 @@ public class HibernateConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(url, username, password);
         dataSource.setDriverClassName(driverClass);
+        flywayMigrate(dataSource);
         return dataSource;
     }
 
@@ -66,6 +70,14 @@ public class HibernateConfig {
         transactionManager.setSessionFactory(sessionFactory.getObject());
         transactionManager.setDataSource(dataSource);
         return transactionManager;
+    }
+
+    private void flywayMigrate(DataSource dataSource){
+        var flyway = Flyway.configure()
+                .dataSource(dataSource)
+                .locations("classpath:/db/migration")
+                .load();
+        flyway.migrate();
     }
 
 }

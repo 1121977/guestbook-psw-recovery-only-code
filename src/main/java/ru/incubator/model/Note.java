@@ -14,12 +14,9 @@ public class Note {
     private String userName;
     @Column(length = 1_000)
     private String message;
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date noteDate;
     private LocalDateTime noteDateTime;
 
     public Note(){
-//        this.noteDate = new Date();
         this.noteDateTime = LocalDateTime.now();
     }
 
