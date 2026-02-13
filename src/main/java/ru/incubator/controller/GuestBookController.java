@@ -1,6 +1,7 @@
 package ru.incubator.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +28,7 @@ public class GuestBookController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public RedirectView saveMessage(@ModelAttribute Note note) {
+        note.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
         dbServiceNote.saveNote(note);
         return new RedirectView("/", true);
     }
