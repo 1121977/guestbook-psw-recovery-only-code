@@ -43,7 +43,7 @@ import java.util.function.Function;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class SecurityConfiguration {
 
 	@Bean

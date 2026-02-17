@@ -20,6 +20,9 @@
                             <td>
                                 ${note.userName}
                             </td>
+                            <td>
+                                <a href="/guestbook/msg?to=${note.userName}">Отправить личное сообщение</a>
+                            </td>
                         </tr>
                          <tr>
                             <td>
