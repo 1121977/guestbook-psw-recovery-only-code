@@ -33,7 +33,8 @@ public class GuestBookController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(ModelMap model) {
-        List<Note> list = dbServiceNote.findAll();
+//        List<Note> list = dbServiceNote.findAll();
+        List<Note> list = dbServiceNote.findForUser(SecurityContextHolder.getContext().getAuthentication().getName());
         model.put("notes", list);
         return "index";
     }
@@ -48,10 +49,16 @@ public class GuestBookController {
     @RequestMapping(value = "/sendto", method = RequestMethod.POST)
     public RedirectView sendTo(@ModelAttribute Note note) {
         String recipient = note.getRecipient();
-        if (recipient!=null&&((JdbcUserDetailsManager)userDetailsService).userExists(recipient)){
+        if (recipient != null && ((JdbcUserDetailsManager) userDetailsService).userExists(recipient)) {
             note.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             dbServiceNote.saveNote(note);
         }
         return new RedirectView("/", true);
     }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    String login() {
+        return "login";
+    }
+
 }

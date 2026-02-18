@@ -53,8 +53,12 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests((authorize) -> authorize
 						.anyRequest().authenticated()
 				)
-				.httpBasic(withDefaults())
-				.formLogin(withDefaults());
+//				.httpBasic(withDefaults())
+//				.formLogin(withDefaults());
+				.formLogin(formLogin ->
+					formLogin
+							.loginPage("/login")
+							.permitAll());
 		return http.build();
 	}
 

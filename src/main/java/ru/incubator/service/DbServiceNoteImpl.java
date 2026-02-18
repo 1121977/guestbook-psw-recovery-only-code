@@ -25,4 +25,9 @@ public class DbServiceNoteImpl implements DbServiceNote {
     public List<Note> findAll() {
         return noteDao.findAll();
     }
+
+    @Override
+    public List<Note> findForUser(String user) {
+        return noteDao.findForUser(user);
+    }
 }
