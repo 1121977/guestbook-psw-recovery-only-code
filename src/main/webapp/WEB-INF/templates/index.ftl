@@ -37,7 +37,7 @@
     <div class="form_container">
         <form id=sendMessageForm action="/guestbook/save" method="POST" modelAttribute="note">
             <div class="form_element">
-                <label for="message">Message:</label>
+                <label for="message">Сообщение:</label>
                 <textarea id="message" name="message"></textarea>
                 <!--input type="text" id="message" name="message"-->
             </div>

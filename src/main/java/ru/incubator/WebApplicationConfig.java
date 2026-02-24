@@ -36,7 +36,7 @@ public class WebApplicationConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/css/**")
-                .addResourceLocations("classpath:/css/");
+        registry.addResourceHandler("/css/**", "/static/**")
+                .addResourceLocations("classpath:/css/", "classpath:/static/");
     }
 }

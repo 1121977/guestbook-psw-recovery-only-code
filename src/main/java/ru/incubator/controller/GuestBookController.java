@@ -1,8 +1,12 @@
 package ru.incubator.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
+import ru.incubator.model.Guest;
 import ru.incubator.model.Note;
 import ru.incubator.service.DbServiceNote;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -57,8 +64,22 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    String login() {
+    public String login() {
         return "login";
+    }
+
+    @RequestMapping(value = "/regform", method = RequestMethod.POST)
+    public String regform(@RequestParam("username") String username, @RequestParam("password") String password) {
+        Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        grantedAuthorities.add(new GrantedAuthority() {
+            @Override
+            public @Nullable String getAuthority() {
+                return "ROLE_USER";
+            }
+        });
+        Guest guest = new Guest(username, String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), grantedAuthorities);
+        ((JdbcUserDetailsManager) userDetailsService).createUser(guest);
+        return "registred";
     }
 
 }

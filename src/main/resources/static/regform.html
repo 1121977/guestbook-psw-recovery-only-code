@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Please Log In</title>
-        <link rel="stylesheet" href="/guestbook/css/general.css">
+    <title>Форма регистрации</title>
+    <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
-<body display="flex" justify-content="center" align-items="center" flex-direction="column">
-
-    <h1>Необходимо ввести login/password</h1>
+<body>
+    <h1>Заполните форму</h1>
     <div class="form_container">
-        <form id=login action="/guestbook/login" method="POST">
+        <form id=login action="/guestbook/regform" method="POST">
             <div class="form_element">
                 <label for="username">Имя пользователя:</label>
                 <br/>
@@ -21,10 +20,14 @@
                 <input type="password" name="password" id="password" placeholder="Password"/>
             </div>
             <br/>
-            <input type="submit" value="Submit">
+            <div class="form_element">
+                <label for="password">Пароль (повторить):</label>
+                <br/>
+                <input type="password" id="password2" placeholder="Password"/>
+            </div>
+            <input type="submit" value="Зарегистрироваться">
         </form>
     </div>
-    <br/>
-    <a href="/guestbook/static/regform.html">Зарегистрироваться</>
+
 </body>
 </html>

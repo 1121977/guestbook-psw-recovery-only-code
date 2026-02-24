@@ -13,8 +13,16 @@ public class Guest extends User {
 
     private List<Long> noteList = new ArrayList<>();
 
-    public Guest(String username, @Nullable String password, Collection<? extends GrantedAuthority> authorities) {
+    public Guest(String username, @Nullable String password, @Nullable Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
+    }
+
+    public Guest(){
+        this("username","password", new HashSet<>());
+    }
+
+    public Guest(String username, @Nullable String password){
+        this(username, password, new HashSet<>());
     }
 
     @Override
@@ -37,4 +45,20 @@ public class Guest extends User {
     public void setNoteList(List<Long> noteList) {
         this.noteList = noteList;
     }
+
+    @Override
+    public String getPassword(){
+        return super.getPassword();
+    }
+
+    public void addAuthorities(GrantedAuthority ... grantedAuthorityForAddition){
+        var currentGrantedAuthority = this.getAuthorities();
+        for (GrantedAuthority grantedAuthority : grantedAuthorityForAddition) {
+            currentGrantedAuthority.add(grantedAuthority);
+        }
+        Arrays.stream(grantedAuthorityForAddition).sequential().forEach(currentGrantedAuthority::add);
+    }
+
+    public void setPassword(String password){}
+
 }
