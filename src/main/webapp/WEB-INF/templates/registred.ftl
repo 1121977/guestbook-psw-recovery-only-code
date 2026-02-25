@@ -7,5 +7,6 @@
 </head>
 <body>
     <h1>Registration</h1>
+    <p>User ${username} is registered.</>
 </body>
 </html>

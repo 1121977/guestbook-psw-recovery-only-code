@@ -1,7 +1,6 @@
 plugins {
     id 'war'
-    id("org.gretty") version "4.1.6"
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "io.spring.dependency-management" version "1.1.7"
 }
 
 java {
@@ -19,12 +18,13 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:6.0.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'org.mockito:mockito-core:5.21.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.21.0'
     testImplementation 'org.springframework:spring-test:7.0.3'
-    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '2.0.3'
-    testImplementation "org.testcontainers:testcontainers-junit-jupiter:2.0.3"
+    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
     implementation "org.springframework.security:spring-security-web"
     implementation "org.springframework.security:spring-security-config"
@@ -39,7 +39,6 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-core:7.2.2.Final'
     implementation group: 'no.api.freemarker', name: 'freemarker-java8', version: '3.0.3'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
-
 }
 
 dependencyManagement {

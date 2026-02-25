@@ -1,8 +1,10 @@
 package ru.incubator.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -69,7 +71,7 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/regform", method = RequestMethod.POST)
-    public String regform(@RequestParam("username") String username, @RequestParam("password") String password) {
+    public String regform(@RequestParam("username") String username, @RequestParam("password") String password, ModelMap modelMap) {
         Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
         grantedAuthorities.add(new GrantedAuthority() {
             @Override
@@ -79,6 +81,9 @@ public class GuestBookController {
         });
         Guest guest = new Guest(username, String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), grantedAuthorities);
         ((JdbcUserDetailsManager) userDetailsService).createUser(guest);
+        ExpressionParser parser = new SpelExpressionParser();
+        Expression expression = parser.parseExpression("dbServiceNote.findAll()");
+        modelMap.put("username", expression.getValue());
         return "registred";
     }
 
