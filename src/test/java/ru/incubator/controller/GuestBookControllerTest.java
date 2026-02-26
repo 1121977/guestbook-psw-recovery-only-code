@@ -35,10 +35,6 @@ class GuestBookControllerTest {
     private DbServiceNote dbServiceNote;
     @Mock
     private JdbcUserDetailsManager jdbcUserDetailsManager;
-/*
-    @Mock(extraInterfaces = {UserDetailsManager.class})
-    private UserDetailsService userDetailsService;
-*/
     @InjectMocks
     private GuestBookController guestBookController;
 
@@ -50,11 +46,7 @@ class GuestBookControllerTest {
 
     @Test
     void regformTest() throws Exception {
-//        doNothing().when(((JdbcUserDetailsManager) userDetailsService)).createUser(any(Guest.class));
         doNothing().when(jdbcUserDetailsManager).createUser(any(Guest.class));
-//        var post = post("/regform");
-//        var accept = post.accept(MediaType.TEXT_PLAIN);
-//        accept.param("username", "SomeValue").param("password", "qwerty12");
         var a = mockMvc.perform(post("/regform")
                         .accept(MediaType.TEXT_PLAIN)
                         .param("username", "SomeValue")
@@ -65,7 +57,7 @@ class GuestBookControllerTest {
     }
 
     @Test
-    void index() throws Exception{
+    void indexTest() throws Exception{
         var get = get("/");
         var a = mockMvc.perform(get);
         a.andExpect(status().isOk());

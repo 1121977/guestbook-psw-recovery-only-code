@@ -82,8 +82,8 @@ public class GuestBookController {
         Guest guest = new Guest(username, String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), grantedAuthorities);
         ((JdbcUserDetailsManager) userDetailsService).createUser(guest);
         ExpressionParser parser = new SpelExpressionParser();
-        Expression expression = parser.parseExpression("dbServiceNote.findAll()");
-        modelMap.put("username", expression.getValue());
+        Expression expression = parser.parseExpression("findAll()");
+        modelMap.put("username", expression.getValue(dbServiceNote));
         return "registred";
     }
 
