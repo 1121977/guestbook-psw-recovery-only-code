@@ -2,9 +2,12 @@ package ru.incubator.controller;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -72,6 +75,10 @@ public class GuestBookController {
 
     @RequestMapping(value = "/regform", method = RequestMethod.POST)
     public String regform(@RequestParam("username") String username, @RequestParam("password") String password, ModelMap modelMap) {
+        if (((JdbcUserDetailsManager)userDetailsService).userExists(username)){
+            modelMap.put("username", username);
+            return "registration_error";
+        }
         Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
         grantedAuthorities.add(new GrantedAuthority() {
             @Override

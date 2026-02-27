@@ -58,6 +58,7 @@ class GuestBookControllerTest {
 
     @Test
     void indexTest() throws Exception{
+//        when(dbServiceNote.findForUser())
         var get = get("/");
         var a = mockMvc.perform(get);
         a.andExpect(status().isOk());
