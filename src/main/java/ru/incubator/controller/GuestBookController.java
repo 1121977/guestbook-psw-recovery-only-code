@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.incubator.model.Guest;
 import ru.incubator.model.Note;
+import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 import ru.incubator.service.DbServiceNote;
 
 import java.util.Collection;
@@ -74,7 +75,7 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/regform", method = RequestMethod.POST)
-    public String regform(@RequestParam("username") String username, @RequestParam("password") String password, ModelMap modelMap) {
+    public String regform(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname, ModelMap modelMap) {
         if (((JdbcUserDetailsManager)userDetailsService).userExists(username)){
             modelMap.put("username", username);
             return "registration_error";
@@ -87,10 +88,15 @@ public class GuestBookController {
             }
         });
         Guest guest = new Guest(username, String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), grantedAuthorities);
-        ((JdbcUserDetailsManager) userDetailsService).createUser(guest);
+        ((JdbcUserDetailsManagerExt) userDetailsService).createUser(guest, firstname, lastname);
+/*
         ExpressionParser parser = new SpelExpressionParser();
         Expression expression = parser.parseExpression("findAll()");
         modelMap.put("username", expression.getValue(dbServiceNote));
+*/
+        modelMap.put("username", username);
+        modelMap.put("firstname", firstname);
+        modelMap.put("lastname", lastname);
         return "registred";
     }
 

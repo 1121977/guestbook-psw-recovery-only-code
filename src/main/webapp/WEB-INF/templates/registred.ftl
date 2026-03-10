@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
 <body>
-    <h1>Registration</h1>
-    <p>User ${username} is registered.</>
+    <h1>Регистрация</h1>
+    <p>Пользователь <i>${firstname} ${lastname}</i> с логином для входа <b>${username}</b> зарегистрирован.</>
 </body>
 </html>

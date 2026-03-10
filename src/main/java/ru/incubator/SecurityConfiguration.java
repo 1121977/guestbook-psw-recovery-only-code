@@ -35,6 +35,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 
 import javax.sql.DataSource;
 
@@ -65,7 +66,7 @@ public class SecurityConfiguration {
 
 	@Bean
 	public UserDetailsService userDetailsService(DataSource dataSource) {
-		var users = new JdbcUserDetailsManager(dataSource);
+		var users = new JdbcUserDetailsManagerExt(dataSource);
 		if (!users.userExists("admin")) {
 
 			UserDetails admin = User.builder()
@@ -73,7 +74,7 @@ public class SecurityConfiguration {
 					.password(String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode("password")))
 					.roles("ADMIN")
 					.build();
-			users.createUser(admin);
+			users.createUser(admin, "Admin", "Admin");
 		}
 		return users;
 	}
