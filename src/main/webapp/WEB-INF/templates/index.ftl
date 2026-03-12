@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Гостевая книга УЭК</h1>
+    <h2>Привет, ${firstname}!</h2>
     <table border=2 class="gb_table">
         <#list notes as note>
             <tr>
