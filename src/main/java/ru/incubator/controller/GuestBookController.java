@@ -69,9 +69,9 @@ public class GuestBookController {
             }
         });
         context.setVariable("username", username);
-        String some = String.format("'SELECT firstname FROM users where username = ''%s'''", username);
-        Expression someExpression = parser.parseExpression(some);
-        String commandString = someExpression.getValue(context,"dataSource", String.class);
+        String firstnameSelectRequest = String.format("'SELECT firstname FROM users where username = ''%s'''", username);
+        Expression firstnameSelectRequestExpression = parser.parseExpression(firstnameSelectRequest);
+        String commandString = firstnameSelectRequestExpression.getValue(context,"dataSource", String.class);
         context.setVariable("command", commandString);
         String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource).sql(#command).query(T(String)).optional().orElseThrow()";
         Expression expression = parser.parseExpression(expressionString);

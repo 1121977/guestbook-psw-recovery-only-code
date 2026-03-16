@@ -7,11 +7,17 @@
     <#setting locale="en_US">
 </head>
 <body>
-    <h1>Гостевая книга УЭК</h1>
+    <header>
+        <div></div>
+        <h1>Гостевая книга УЭК</h1>
+        <form action="/guestbook/logout" method="POST">
+            <button type="submit">Log Out</button>
+        </form>
+   </header>
     <h2>Привет, ${firstname}!</h2>
     <table border=2 class="gb_table">
         <#list notes as note>
-            <tr>
+            <tr <#if note.recipient??>class="private_message"</#if>>
                 <td>
                     ${note.message}
                 </td>
