@@ -1,0 +1,65 @@
+---
+# Deploy guestbook to /home/uctf/services/<service_name>, run container as user uctf.
+# Uses inventory: ansible_inventory.
+# Vars from CI: docker_image, registry_user, registry_password.
+- name: Deploy guestbook
+  hosts: team_servers
+  gather_facts: true
+  vars:
+    service_name: guestbook
+    deploy_dir: /home/uctf/services/{{ service_name }}
+  tasks:
+    - name: Ensure deploy directory exists and is owned by uctf
+      ansible.builtin.file:
+        path: "{{ deploy_dir }}"
+        state: directory
+        owner: uctf
+        group: uctf
+        mode: "0755"
+      become: true
+
+    - name: Ensure uctf is in docker group
+      ansible.builtin.user:
+        name: uctf
+        groups: docker
+        append: true
+      become: true
+
+    - name: Get uctf UID
+      ansible.builtin.command: id -u uctf
+      register: uctf_id
+      become: true
+      changed_when: false
+
+    - name: Set uctf_uid fact
+      ansible.builtin.set_fact:
+        uctf_uid: "{{ uctf_id.stdout }}"
+
+    - name: Deploy docker-compose.yml to {{ deploy_dir }}
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ deploy_dir }}/docker-compose.yml"
+        owner: uctf
+        group: uctf
+        mode: "0644"
+      become: true
+
+    - name: Log in to container registry as uctf
+      ansible.builtin.shell: |
+        docker login -u "{{ registry_user }}" -p "{{ registry_password }}" "{{ registry_url | default('registry.gitlab.com') }}"
+      become: true
+      become_user: uctf
+      environment:
+        HOME: /home/uctf
+      no_log: true
+      changed_when: false
+
+    - name: Pull and start containers as uctf
+      ansible.builtin.shell: |
+        cd "{{ deploy_dir }}" && docker compose pull && docker compose up -d
+      become: true
+      become_user: uctf
+      environment:
+        HOME: /home/uctf
+      args:
+        executable: /bin/bash

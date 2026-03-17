@@ -1,0 +1,12 @@
+[all:vars]
+ansible_user=uctf
+ansible_ssh_pass={{ uctf_password }}
+ansible_become_pass={{ uctf_password }}
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_python_interpreter=/usr/bin/python3
+
+[uctf_team_vms]
+team-2 ansible_host=10.62.2.10 hostname=team-2.ctflab.local
+
+[team_servers:children]
+uctf_team_vms

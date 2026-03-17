@@ -1,0 +1,55 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  # GitLab CI does not support bash-style ${VAR:-fallback} in variables.
+  DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+
+# --- Build: runner with tags build + docker-socket ---
+build:
+  stage: build
+  image: docker:24
+  tags:
+    - build
+    - docker-socket
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker build -t "$DOCKER_IMAGE" .
+    - docker push "$DOCKER_IMAGE"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: on_success
+    - when: on_success
+
+# --- Deploy: requires runner with tag 'ansible', uses ansible_inventory ---
+deploy:
+  stage: deploy
+  image:
+    name: cytopia/ansible:latest
+    entrypoint: [""]
+  tags:
+    - ansible
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+  before_script:
+    - ansible --version
+    - apk add --no-cache openssh-client sshpass
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+  script:
+    - >
+      ansible-playbook -i ansible_inventory deploy.yml
+      -e "docker_image=$DOCKER_IMAGE"
+      -e "uctf_password=$UCTF_PASSWORD"
+      -e "registry_user=$CI_REGISTRY_USER"
+      -e "registry_password=$CI_REGISTRY_PASSWORD"
+      -e "registry_url=$CI_REGISTRY"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "deploy"
+      when: on_success
+    - when: manual
