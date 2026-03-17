@@ -35,6 +35,15 @@
       ansible.builtin.set_fact:
         uctf_uid: "{{ uctf_id.stdout }}"
 
+    - name: Ensure data directory exists and is owned by uctf
+      ansible.builtin.file:
+        path: "{{ deploy_dir }}/data"
+        state: directory
+        owner: uctf
+        group: uctf
+        mode: "0755"
+      become: true
+
     - name: Deploy docker-compose.yml to {{ deploy_dir }}
       ansible.builtin.template:
         src: docker-compose.yml.j2
