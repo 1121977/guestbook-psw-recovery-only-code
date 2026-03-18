@@ -27,6 +27,9 @@ header {
     width: 100%;
 }
 
-.private_message{
+.private_note{
     color: green;
+}
+
+.message{
 }

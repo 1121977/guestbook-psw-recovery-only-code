@@ -16,6 +16,7 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
 
     private String createUserSql = DEF_CREATE_USER_EXT_SQL;
     private String createAuthoritySql = DEF_INSERT_AUTHORITY_SQL;
+    private String deleteUserSql = DEF_DELETE_USER_SQL;
     private JdbcTemplate jdbcTemplate;
 
     public JdbcUserDetailsManagerExt(){}
@@ -73,5 +74,8 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
         }
     }
 
+    private void deleteUser(UserDetails userDetails){
+
+    }
 
 }

@@ -31,6 +31,7 @@ import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 import ru.incubator.service.DbServiceNote;
 
 import javax.sql.DataSource;
+import java.net.http.HttpRequest;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -100,7 +101,7 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login() {
+    public String lcatogin() {
         return "login";
     }
 

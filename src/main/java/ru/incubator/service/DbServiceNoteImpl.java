@@ -30,4 +30,9 @@ public class DbServiceNoteImpl implements DbServiceNote {
     public List<Note> findForUser(String user) {
         return noteDao.findForUser(user);
     }
+
+    @Override
+    public int deleteForUser(String user) {
+        return 0;
+    }
 }

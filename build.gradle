@@ -51,6 +51,10 @@ test {
     useJUnitPlatform()
 }
 
+war {
+    archivesBaseName = 'ROOT'
+}
+
 tasks.register('buildAndCopyWarToApache', Copy) {
     from war // shortcut for createJar.outputs.files
     into "/opt/apache-tomcat-11.0.18/webapps"

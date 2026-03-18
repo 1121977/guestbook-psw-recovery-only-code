@@ -24,4 +24,16 @@ public class NoteDaoImpl extends DaoImpl<Note> implements NoteDao
         session.close();
         return list;
     }
+
+    @Override
+    public int deleteForUser(String userName) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        int deletedNotes = session.createQuery("delete note from " + entityClass.getName() + " note where note.userName = :deletedUser or note.recipient = :deletedUser", entityClass)
+                .setParameter("deletedUser", userName)
+                .executeUpdate();
+        tx.commit();
+        session.close();
+        return deletedNotes;
+    }
 }
