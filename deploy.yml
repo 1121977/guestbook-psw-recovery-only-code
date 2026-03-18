@@ -65,7 +65,7 @@
 
     - name: Pull and start containers as uctf
       ansible.builtin.shell: |
-        cd "{{ deploy_dir }}" && docker compose pull && docker compose up -d
+        cd "{{ deploy_dir }}" && docker compose pull && docker compose up -d --remove-orphans
       become: true
       become_user: uctf
       environment:
