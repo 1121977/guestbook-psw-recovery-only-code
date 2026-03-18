@@ -51,9 +51,11 @@ test {
     useJUnitPlatform()
 }
 
+/*
 war {
     archivesBaseName = 'ROOT'
 }
+*/
 
 tasks.register('buildAndCopyWarToApache', Copy) {
     from war // shortcut for createJar.outputs.files
