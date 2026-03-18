@@ -22,7 +22,7 @@ RUN ./gradlew war --no-daemon -x test
 # Runtime stage: Tomcat 11 + JRE 21
 FROM tomcat:11.0-jre21
 
-COPY --from=builder /app/build/libs/guestbook.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=builder /app/build/libs/ROOT.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 
