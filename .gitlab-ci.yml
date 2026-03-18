@@ -45,6 +45,10 @@ deploy:
     - >
       ansible-playbook -i ansible_inventory deploy.yml
       -e "docker_image=$DOCKER_IMAGE"
+      -e "repo_host=$CI_SERVER_HOST"
+      -e "repo_path=$CI_PROJECT_PATH"
+      -e "deploy_branch=deploy"
+      -e "gitlab_token=$GITLAB_DEPLOY_TOKEN"
       -e "uctf_password=$UCTF_PASSWORD"
       -e "registry_user=$CI_REGISTRY_USER"
       -e "registry_password=$CI_REGISTRY_PASSWORD"

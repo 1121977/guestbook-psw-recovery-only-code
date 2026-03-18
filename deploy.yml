@@ -18,6 +18,32 @@
         mode: "0755"
       become: true
 
+    - name: Ensure git is installed
+      ansible.builtin.package:
+        name: git
+        state: present
+      become: true
+
+    - name: Sync deploy branch source code as uctf
+      ansible.builtin.shell: |
+        if [ ! -d "{{ deploy_dir }}/src/.git" ]; then
+          git clone --branch "{{ deploy_branch | default('deploy') }}" \
+            "https://oauth2:{{ gitlab_token }}@{{ repo_host }}/{{ repo_path }}.git" \
+            "{{ deploy_dir }}/src"
+        else
+          cd "{{ deploy_dir }}/src"
+          git fetch origin
+          git checkout "{{ deploy_branch | default('deploy') }}"
+          git reset --hard "origin/{{ deploy_branch | default('deploy') }}"
+        fi
+      become: true
+      become_user: uctf
+      environment:
+        HOME: /home/uctf
+      args:
+        executable: /bin/bash
+      no_log: true
+
     - name: Ensure uctf is in docker group
       ansible.builtin.user:
         name: uctf
