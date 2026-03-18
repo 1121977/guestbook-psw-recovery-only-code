@@ -8,4 +8,5 @@ public interface DbServiceNote {
     long saveNote(Note note);
     List<Note> findAll();
     List<Note> findForUser(String user);
+    int deleteForUser(String user);
 }

@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'application'
+    id "io.spring.dependency-management" version "1.1.7"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 group = 'ru.incubator'
@@ -14,11 +16,25 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
+    implementation 'org.springframework:spring-core'
+    implementation 'org.springframework:spring-context'
+    implementation group: 'dnsjava', name: 'dnsjava', version: '3.6.4'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.32'
+    implementation 'org.jsoup:jsoup:1.22.1'
 }
 
 test {
     useJUnitPlatform()
 }
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.security:spring-security-bom:7.0.2'
+        mavenBom 'org.springframework:spring-framework-bom:7.0.6'
+    }
+}
+
 
 application {
     mainClass = 'ru.incubator.Main'
@@ -28,4 +44,10 @@ tasks.jar {
     manifest {
         attributes["Main-Class"] = "ru.incubator.Main"
     }
+}
+
+run {
+//    args = ["get", "localhost", "kfksdmfk3", "dlssmvmv", "kfekwmk"]
+    args = ["put", "127.0.0.1", "kfksdmfk4", "dlssmvmv4", "kfekwmk"]
+//    args = ["check", "127.0.0.1"]
 }

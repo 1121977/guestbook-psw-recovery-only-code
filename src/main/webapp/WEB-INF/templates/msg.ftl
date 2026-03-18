@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Message To</title>
-    <link rel="stylesheet" href="/guestbook/css/general.css">
+    <link rel="stylesheet" href="/css/general.css">
 </head>
 <body>
     <h1>Сообщение для ${recipient}</h1>
     <div class="form_container">
-        <form id=sendMessageForm action="/guestbook/sendto" method="POST" modelAttribute="note">
+        <form id=sendMessageForm action="/sendto" method="POST" modelAttribute="note">
             <div class="form_element">
                 <label for="message">Сообщение:</label>
                 <br />
