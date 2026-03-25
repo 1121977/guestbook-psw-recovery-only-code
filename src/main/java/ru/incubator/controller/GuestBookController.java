@@ -69,12 +69,11 @@ public class GuestBookController {
                 return applicationContext.getBean(beanName);
             }
         });
-        context.setVariable("username", username);
-        String firstnameSelectRequest = String.format("'SELECT firstname FROM users where username = ''%s'''", username);
-        Expression firstnameSelectRequestExpression = parser.parseExpression(firstnameSelectRequest);
-        String commandString = firstnameSelectRequestExpression.getValue(context,"dataSource", String.class);
-        context.setVariable("command", commandString);
-        String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource).sql(#command).query(T(String)).optional().orElseThrow()";
+
+        String sqlSelectWithParametersRequest = "'.sql(\"SELECT firstname FROM users where username = :username\").param(\"username\", \"" + username + "\")'";
+        Expression sqlSelectWithParametersExpression = parser.parseExpression(sqlSelectWithParametersRequest);
+        String commandString = sqlSelectWithParametersExpression.getValue(context,String.class);
+        String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource)" + commandString + ".query(T(String)).optional().orElseThrow()";
         Expression expression = parser.parseExpression(expressionString);
         String firstname = expression.getValue(context, "dataSource", String.class);
 
@@ -101,7 +100,7 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String lcatogin() {
+    public String login() {
         return "login";
     }
 
@@ -125,6 +124,12 @@ public class GuestBookController {
         modelMap.put("firstname", firstname);
         modelMap.put("lastname", lastname);
         return "registred";
+    }
+
+    @RequestMapping(value = "/deluser", method = RequestMethod.GET)
+    public RedirectView deleteUser(){
+        ((JdbcUserDetailsManagerExt) userDetailsService).deleteUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        return new RedirectView("/logout");
     }
 
 }

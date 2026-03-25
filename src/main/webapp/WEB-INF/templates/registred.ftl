@@ -7,6 +7,6 @@
 </head>
 <body>
     <h1>Регистрация</h1>
-    <p>Пользователь <i>${firstname} ${lastname}</i> с логином для входа <b>${username}</b> зарегистрирован.</>
+    <p id="registration_info">Пользователь <i>${firstname} ${lastname}</i> с логином для входа <b>${username}</b> зарегистрирован.</>
 </body>
 </html>

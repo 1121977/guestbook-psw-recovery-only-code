@@ -11,10 +11,10 @@
         <div></div>
         <h1>Гостевая книга УЭК</h1>
         <form action="/logout" method="POST">
-            <button type="submit">Log Out</button>
+            <button type="submit">Выйти</button>
         </form>
    </header>
-    <h2>Привет, ${firstname}!</h2>
+    <h2 id="hello_string">Привет, ${firstname}!</h2>
     <table border=2 class="gb_table">
         <#list notes as note>
             <tr <#if note.recipient??>class="private_note"</#if>>
@@ -46,9 +46,8 @@
             <div class="form_element">
                 <label for="message">Сообщение:</label>
                 <textarea id="message" name="message"></textarea>
-                <!--input type="text" id="message" name="message"-->
             </div>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Отправить">
         </form>
     </div>
 </body>

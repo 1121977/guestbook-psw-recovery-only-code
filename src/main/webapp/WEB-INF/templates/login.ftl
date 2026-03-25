@@ -9,7 +9,7 @@
 
     <h1>Необходимо ввести login/password</h1>
     <div class="form_container">
-        <form id=login action="/login" method="POST">
+        <form id="login" action="/login" method="POST">
             <div class="form_element">
                 <label for="username">Имя пользователя:</label>
                 <br/>
@@ -21,7 +21,7 @@
                 <input type="password" name="password" id="password" placeholder="Password"/>
             </div>
             <br/>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Войти">
         </form>
     </div>
     <br/>

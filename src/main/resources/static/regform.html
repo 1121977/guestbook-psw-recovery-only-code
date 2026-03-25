@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Форма регистрации</title>
@@ -8,7 +8,7 @@
 <body>
     <h1>Заполните форму</h1>
     <div class="form_container">
-        <form id=login action="/regform" method="POST">
+        <form id="login" action="/regform" method="POST">
             <div class="form_element">
                 <label for="username">Учётная запись:</label>
                 <br/>
@@ -35,9 +35,11 @@
                 <br/>
                 <input type="password" id="password2" placeholder="Пароль"/>
             </div>
-            <input type="submit" value="Зарегистрироваться">
+            <input type="submit" value="Зарегистрироваться" id="button">
         </form>
     </div>
+<script src="../script/regform.js" defer></script>
+
 
 </body>
 </html>

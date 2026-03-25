@@ -16,8 +16,10 @@
 
 package ru.incubator;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,40 +46,60 @@ import java.util.function.Function;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 @EnableWebSecurity(debug = false)
 public class SecurityConfiguration {
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests((authorize) -> authorize
-						.requestMatchers("/css/**", "/static/**", "/regform").permitAll()
-						.anyRequest().authenticated()
-				)
-//				.httpBasic(withDefaults())
-//				.formLogin(withDefaults());
-				.formLogin(formLogin ->
-					formLogin
-							.loginPage("/login")
-							.permitAll());
-		return http.build();
-	}
+    @Value("${guestbook.admin.password}")
+    private String adminPasswordHash;
 
-	@Bean
-	public UserDetailsService userDetailsService(DataSource dataSource) {
-		var users = new JdbcUserDetailsManagerExt(dataSource);
-		if (!users.userExists("admin")) {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/css/**", "/static/**", "/regform", "/script/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/login")
+                                .permitAll());
+        return http.build();
+    }
 
-			UserDetails admin = User.builder()
-					.username("admin")
-					.password(String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode("password")))
-					.roles("ADMIN")
-					.build();
-			users.createUser(admin, "Admin", "Admin");
-		}
-		return users;
-	}
+    @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        var users = new JdbcUserDetailsManagerExt(dataSource);
+        if (!users.userExists("admin")) {
+            UserDetails admin = User.builder()
+                    .username("admin")
+                    .password(String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode("password")))
+//                    .password(adminPasswordHash)
+                    .roles("ADMIN")
+                    .build();
+            users.createUser(admin, "Admin", "Admin");
+        } /*else {
+            users.changeAdminPassword(adminPasswordHash);
+        }*/
+        return users;
+    }
 
+/*
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(authenticationProvider);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+*/
 
 }

@@ -1,27 +1,30 @@
 package ru.incubator.security.provisioning;
 
-import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.util.Assert;
+import ru.incubator.service.DbServiceNote;
 
 import javax.sql.DataSource;
 import java.util.Collection;
 
-public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements UserDetailsManagerExt{
+public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements UserDetailsManagerExt {
 
     public static final String DEF_CREATE_USER_EXT_SQL = "insert into users (username, firstname, lastname, password, enabled) values (?,?,?,?,?)";
-
     private String createUserSql = DEF_CREATE_USER_EXT_SQL;
     private String createAuthoritySql = DEF_INSERT_AUTHORITY_SQL;
-    private String deleteUserSql = DEF_DELETE_USER_SQL;
+    private String changePasswordSql = DEF_CHANGE_PASSWORD_SQL;
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private DbServiceNote dbServiceNote;
 
-    public JdbcUserDetailsManagerExt(){}
+    public JdbcUserDetailsManagerExt() {
+    }
 
-    public JdbcUserDetailsManagerExt(DataSource dataSource){
+    public JdbcUserDetailsManagerExt(DataSource dataSource) {
         super(dataSource);
         if (this.jdbcTemplate == null || dataSource != this.jdbcTemplate.getDataSource()) {
             this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -49,6 +52,11 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
         }
     }
 
+    @Override
+    public void changeAdminPassword(String newPassword) {
+        requireJdbcTemplate().update(this.changePasswordSql, newPassword, "admin");
+    }
+
     private void validateUserDetails(UserDetails user) {
         Assert.hasText(user.getUsername(), "Username may not be empty or null");
         validateAuthorities(user.getAuthorities());
@@ -74,8 +82,10 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
         }
     }
 
-    private void deleteUser(UserDetails userDetails){
-
+    @Override
+    public void deleteUser(String username) {
+        dbServiceNote.deleteForUser(username);
+        super.deleteUser(username);
     }
 
 }

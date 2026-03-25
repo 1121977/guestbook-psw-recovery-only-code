@@ -5,4 +5,5 @@ import org.springframework.security.provisioning.UserDetailsManager;
 
 public interface UserDetailsManagerExt extends UserDetailsManager {
     void createUser(UserDetails user, String firstName, String lastName);
+    void changeAdminPassword(final String password);
 }

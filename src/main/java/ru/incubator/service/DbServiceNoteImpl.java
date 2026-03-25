@@ -33,6 +33,6 @@ public class DbServiceNoteImpl implements DbServiceNote {
 
     @Override
     public int deleteForUser(String user) {
-        return 0;
+        return noteDao.deleteForUser(user);
     }
 }
