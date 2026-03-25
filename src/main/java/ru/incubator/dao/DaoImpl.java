@@ -18,9 +18,7 @@ public abstract class DaoImpl<T> implements Dao<T> {
     @Override
     public long save(T t) {
         Session session = sessionFactory.openSession();
-//        Transaction tx = session.beginTransaction();
         session.persist(t);
-//        tx.commit();
         session.flush();
         session.close();
         return 0;

@@ -2,17 +2,10 @@ package ru.incubator.controller;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.expression.*;
-import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,12 +23,9 @@ import ru.incubator.model.Note;
 import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 import ru.incubator.service.DbServiceNote;
 
-import javax.sql.DataSource;
-import java.net.http.HttpRequest;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class GuestBookController {
@@ -44,8 +34,6 @@ public class GuestBookController {
     private DbServiceNote dbServiceNote;
     @Autowired
     private UserDetailsService userDetailsService;
-    @Autowired
-    private DataSource dataSource;
     @Autowired
     ApplicationContext applicationContext;
 
@@ -70,12 +58,12 @@ public class GuestBookController {
             }
         });
 
-        String sqlSelectWithParametersRequest = "'.sql(\"SELECT firstname FROM users where username = :username\").param(\"username\", \"" + username + "\")'";
+        String sqlSelectWithParametersRequest = String.format("'.sql(\"SELECT firstname FROM users where username = :username\").param(\"username\", \"%s\")'", username);
         Expression sqlSelectWithParametersExpression = parser.parseExpression(sqlSelectWithParametersRequest);
         String commandString = sqlSelectWithParametersExpression.getValue(context,String.class);
         String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource)" + commandString + ".query(T(String)).optional().orElseThrow()";
         Expression expression = parser.parseExpression(expressionString);
-        String firstname = expression.getValue(context, "dataSource", String.class);
+        String firstname = expression.getValue(context, String.class);
 
         model.put("firstname", firstname);
         model.put("notes", list);

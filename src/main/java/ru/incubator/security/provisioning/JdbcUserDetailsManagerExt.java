@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.util.Assert;
 import ru.incubator.service.DbServiceNote;
-
 import javax.sql.DataSource;
 import java.util.Collection;
 
@@ -41,7 +40,6 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
             ps.setBoolean(5, user.isEnabled());
             int paramCount = ps.getParameterMetaData().getParameterCount();
             if (paramCount > 5) {
-                // NOTE: acc_locked, acc_expired and creds_expired are also to be inserted
                 ps.setBoolean(6, !user.isAccountNonLocked());
                 ps.setBoolean(7, !user.isAccountNonExpired());
                 ps.setBoolean(8, !user.isCredentialsNonExpired());

@@ -47,7 +47,7 @@ tasks.jar {
 }
 
 run {
-//    args = ["get", "localhost", "kfksdmfk3", "dlssmvmv", "kfekwmk"]
+    args = ["get", "127.0.0.1", "kfksdmfk4", "dlssmvmv4", "kfekwmk"]
 //    args = ["put", "127.0.0.1", "kfksdmfk4", "dlssmvmv4", "kfekwmk"]
-    args = ["check", "127.0.0.1"]
+//    args = ["check", "127.0.0.1"]
 }

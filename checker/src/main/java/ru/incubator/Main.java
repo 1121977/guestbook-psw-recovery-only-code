@@ -13,7 +13,6 @@ public class Main {
         root.setLevel(Level.ERROR);
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(CheckerConfiguration.class);
-//        context.registerBean("bootstrapServer", String.class, () -> arg[1]);
         Checker checker = switch (arg.length == 0?"nothing":arg[0]) {
             case "check" -> {
                 context.refresh();
