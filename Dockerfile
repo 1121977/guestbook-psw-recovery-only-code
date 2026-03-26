@@ -9,9 +9,6 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 
-# Subproject (checker) and source only when needed for build
-COPY checker checker
-
 # Prefer offline + no-daemon; use dependency cache layer
 RUN ./gradlew dependencies --no-daemon || true
 
