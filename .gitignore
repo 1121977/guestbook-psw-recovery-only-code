@@ -6,6 +6,7 @@ checker/
 !**/src/test/**/build/
 
 ### IntelliJ IDEA ###
+.idea
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -44,3 +45,4 @@ bin/
 .DS_Store
 /logs/application.log
 /.idea/sqldialects.xml
+/.idea/.gitignore
