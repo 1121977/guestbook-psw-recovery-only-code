@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.expression.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,9 +24,12 @@ import ru.incubator.model.Note;
 import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 import ru.incubator.service.DbServiceNote;
 
+import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+
+import static org.springframework.jdbc.core.JdbcOperationsExtensionsKt.query;
 
 @Controller
 public class GuestBookController {
@@ -36,6 +40,8 @@ public class GuestBookController {
     private UserDetailsService userDetailsService;
     @Autowired
     ApplicationContext applicationContext;
+    @Autowired
+    DataSource dataSource;
 
     @RequestMapping(value = "/msg", method = RequestMethod.GET)
     public String msg(@RequestParam(name = "to") String recipient, ModelMap modelMap) {
@@ -49,6 +55,7 @@ public class GuestBookController {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Note> list = dbServiceNote.findForUser(username);
+        // begin vulnerability
         ExpressionParser parser = new SpelExpressionParser();
         StandardEvaluationContext context = new StandardEvaluationContext();
         context.setBeanResolver(new BeanResolver() {
@@ -64,6 +71,9 @@ public class GuestBookController {
         String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource)" + commandString + ".query(T(String)).optional().orElseThrow()";
         Expression expression = parser.parseExpression(expressionString);
         String firstname = expression.getValue(context, String.class);
+        //end vulnerability
+
+//        String firstname = JdbcClient.create(dataSource).sql("SELECT firstname FROM users where username = :username").param("username", username).query(String.class).optional().orElseThrow();
 
         model.put("firstname", firstname);
         model.put("notes", list);
