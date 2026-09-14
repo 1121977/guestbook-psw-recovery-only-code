@@ -1,6 +1,7 @@
 package ru.incubator;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.output.MigrateResult;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -77,7 +78,7 @@ public class HibernateConfig {
                 .dataSource(dataSource)
                 .locations("classpath:/db/migration")
                 .load();
-        flyway.migrate();
+        MigrateResult migrateResult = flyway.migrate();
     }
 
 }

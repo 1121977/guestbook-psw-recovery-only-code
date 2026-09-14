@@ -52,7 +52,7 @@ test {
 }
 
 war {
-    archivesBaseName = 'ROOT'
+    archiveBaseName = 'guestbook'
 }
 
 tasks.register('buildAndCopyWarToApache', Copy) {

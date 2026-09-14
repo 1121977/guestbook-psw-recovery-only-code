@@ -12,7 +12,7 @@ import java.util.Collection;
 
 public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements UserDetailsManagerExt {
 
-    public static final String DEF_CREATE_USER_EXT_SQL = "insert into users (username, firstname, lastname, password, enabled) values (?,?,?,?,?)";
+    public static final String DEF_CREATE_USER_EXT_SQL = "insert into users (username, firstname, lastname, password, enabled, emailaddress) values (?,?,?,?,?,?)";
     private String createUserSql = DEF_CREATE_USER_EXT_SQL;
     private String createAuthoritySql = DEF_INSERT_AUTHORITY_SQL;
     private String changePasswordSql = DEF_CHANGE_PASSWORD_SQL;
@@ -30,7 +30,7 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
         }
     }
 
-    public void createUser(final UserDetails user, String firstName, String lastName) {
+    public void createUser(final UserDetails user, String firstName, String lastName, String emailaddress) {
         validateUserDetails(user);
         requireJdbcTemplate().update(this.createUserSql, (ps) -> {
             ps.setString(1, user.getUsername());
@@ -38,11 +38,12 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
             ps.setString(3, lastName);
             ps.setString(4, user.getPassword());
             ps.setBoolean(5, user.isEnabled());
+            ps.setString(6, emailaddress);
             int paramCount = ps.getParameterMetaData().getParameterCount();
-            if (paramCount > 5) {
-                ps.setBoolean(6, !user.isAccountNonLocked());
-                ps.setBoolean(7, !user.isAccountNonExpired());
-                ps.setBoolean(8, !user.isCredentialsNonExpired());
+            if (paramCount > 6) {
+                ps.setBoolean(7, !user.isAccountNonLocked());
+                ps.setBoolean(8, !user.isAccountNonExpired());
+                ps.setBoolean(9, !user.isCredentialsNonExpired());
             }
         });
         if (getEnableAuthorities()) {

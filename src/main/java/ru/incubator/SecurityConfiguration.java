@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                     .password(adminPasswordHash)
                     .roles("ADMIN")
                     .build();
-            users.createUser(admin, "Admin", "Admin");
+            users.createUser(admin, "Admin", "Admin", "admin@my.service.tech");
         } else {
             users.changeAdminPassword(adminPasswordHash);
         }

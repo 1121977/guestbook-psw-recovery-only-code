@@ -56,6 +56,7 @@ public class GuestBookController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Note> list = dbServiceNote.findForUser(username);
         // begin vulnerability
+/*
         ExpressionParser parser = new SpelExpressionParser();
         StandardEvaluationContext context = new StandardEvaluationContext();
         context.setBeanResolver(new BeanResolver() {
@@ -71,9 +72,10 @@ public class GuestBookController {
         String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource)" + commandString + ".query(T(String)).optional().orElseThrow()";
         Expression expression = parser.parseExpression(expressionString);
         String firstname = expression.getValue(context, String.class);
+*/
         //end vulnerability
 
-//        String firstname = JdbcClient.create(dataSource).sql("SELECT firstname FROM users where username = :username").param("username", username).query(String.class).optional().orElseThrow();
+        String firstname = JdbcClient.create(dataSource).sql("SELECT firstname FROM users where username = :username").param("username", username).query(String.class).optional().orElseThrow();
 
         model.put("firstname", firstname);
         model.put("notes", list);
@@ -103,7 +105,7 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/regform", method = RequestMethod.POST)
-    public String regform(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname, ModelMap modelMap) {
+    public String regform(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname, @RequestParam("emailaddress") String emailaddress, ModelMap modelMap) {
         if (((JdbcUserDetailsManagerExt) userDetailsService).userExists(username)) {
             modelMap.put("username", username);
             return "registration_error";
@@ -116,7 +118,7 @@ public class GuestBookController {
             }
         });
         Guest guest = new Guest(username, String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), grantedAuthorities);
-        ((JdbcUserDetailsManagerExt) userDetailsService).createUser(guest, firstname, lastname);
+        ((JdbcUserDetailsManagerExt) userDetailsService).createUser(guest, firstname, lastname, emailaddress);
 
         modelMap.put("username", username);
         modelMap.put("firstname", firstname);

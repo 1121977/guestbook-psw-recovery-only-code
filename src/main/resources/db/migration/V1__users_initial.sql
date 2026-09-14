@@ -3,7 +3,8 @@ create table users(
                       password varchar_ignorecase(500) not null,
                       firstname varchar_ignorecase(500) not null,
                       lastname varchar_ignorecase(500) not null,
-                      enabled boolean not null
+                      enabled boolean not null,
+                      emailaddress varchar_ignorecase(500) not null
 );
 
 create table authorities (
