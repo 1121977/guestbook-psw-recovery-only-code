@@ -2,27 +2,22 @@ package ru.incubator.controller;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.expression.*;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.incubator.model.Guest;
 import ru.incubator.model.Note;
 import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 import ru.incubator.service.DbServiceNote;
+import ru.incubator.service.PasswordResetService;
 
 import javax.sql.DataSource;
 import java.util.Collection;
@@ -39,9 +34,9 @@ public class GuestBookController {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    ApplicationContext applicationContext;
-    @Autowired
     DataSource dataSource;
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @RequestMapping(value = "/msg", method = RequestMethod.GET)
     public String msg(@RequestParam(name = "to") String recipient, ModelMap modelMap) {
@@ -55,28 +50,7 @@ public class GuestBookController {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Note> list = dbServiceNote.findForUser(username);
-        // begin vulnerability
-/*
-        ExpressionParser parser = new SpelExpressionParser();
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        context.setBeanResolver(new BeanResolver() {
-            @Override
-            public Object resolve(EvaluationContext context, String beanName) throws AccessException {
-                return applicationContext.getBean(beanName);
-            }
-        });
-
-        String sqlSelectWithParametersRequest = String.format("'.sql(\"SELECT firstname FROM users where username = :username\").param(\"username\", \"%s\")'", username);
-        Expression sqlSelectWithParametersExpression = parser.parseExpression(sqlSelectWithParametersRequest);
-        String commandString = sqlSelectWithParametersExpression.getValue(context,String.class);
-        String expressionString = "T(org.springframework.jdbc.core.simple.JdbcClient).create(@dataSource)" + commandString + ".query(T(String)).optional().orElseThrow()";
-        Expression expression = parser.parseExpression(expressionString);
-        String firstname = expression.getValue(context, String.class);
-*/
-        //end vulnerability
-
         String firstname = JdbcClient.create(dataSource).sql("SELECT firstname FROM users where username = :username").param("username", username).query(String.class).optional().orElseThrow();
-
         model.put("firstname", firstname);
         model.put("notes", list);
         return "index";
@@ -127,9 +101,34 @@ public class GuestBookController {
     }
 
     @RequestMapping(value = "/deluser", method = RequestMethod.GET)
-    public RedirectView deleteUser(){
+    public RedirectView deleteUser() {
         ((JdbcUserDetailsManagerExt) userDetailsService).deleteUser(SecurityContextHolder.getContext().getAuthentication().getName());
         return new RedirectView("/logout");
     }
 
+    @RequestMapping(value = "/repair", method = RequestMethod.POST)
+    public RedirectView repair(@RequestParam("email") String email, ModelMap modelMap) {
+        return new RedirectView(String.format("/token?token=%s&email=%s", passwordResetService.createResetToken(email), email), true);
+    }
+
+    @RequestMapping(value = "/token", method = RequestMethod.GET)
+    public String receiveToken(@RequestParam("token") String token, ModelMap modelMap, @RequestParam("email") String email) {
+        if (passwordResetService.verifyToken(email, token)) {
+            modelMap.put("token", token);
+            modelMap.put("email", email);
+            return "token_check";
+        }
+        return "";
+    }
+
+    @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
+    public String reset_password(@RequestParam("token") String token, @RequestParam("email") String email, @RequestParam("password1") String password, ModelMap modelMap) {
+        String username =  ((JdbcUserDetailsManagerExt) userDetailsService).findUserNameByEmail(email);
+        if (passwordResetService.verifyToken(email, token)) {
+            ((JdbcUserDetailsManagerExt) userDetailsService).changeUserPassword(String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), username);
+            passwordResetService.deleteToken(email);
+        }
+        modelMap.put("email", email);
+        return "password_changed";
+    }
 }

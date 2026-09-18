@@ -17,8 +17,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.incubator.dao.NoteDao;
 import ru.incubator.dao.NoteDaoImpl;
+import ru.incubator.dao.PasswordResetTokenDao;
+import ru.incubator.dao.PasswordResetTokenDaoImpl;
 import ru.incubator.service.DbServiceNote;
 import ru.incubator.service.DbServiceNoteImpl;
+import ru.incubator.service.PasswordResetService;
+import ru.incubator.service.PasswordResetServiceImpl;
+
 import javax.sql.DataSource;
 
 @Configuration
@@ -81,4 +86,14 @@ public class HibernateConfig {
         MigrateResult migrateResult = flyway.migrate();
     }
 
+    @Bean
+    public PasswordResetService passwordResetService(PasswordResetTokenDao passwordResetTokenDao,
+                                                     @Value("${guestbook.resetpasswordtoken.duration}") Integer resetPasswordTokenDuration){
+        return new PasswordResetServiceImpl(passwordResetTokenDao, resetPasswordTokenDuration);
+    }
+
+    @Bean
+    public PasswordResetTokenDao passwordResetTokenDao(SessionFactory sessionFactory){
+        return new PasswordResetTokenDaoImpl(sessionFactory);
+    }
 }

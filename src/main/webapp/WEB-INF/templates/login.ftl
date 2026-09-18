@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Please Log In</title>
-        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
 <body display="flex" justify-content="center" align-items="center" flex-direction="column">
 
     <h1>Необходимо ввести login/password</h1>
     <div class="form_container">
-        <form id="login" action="/login" method="POST">
+        <form id="login" action="/guestbook/login" method="POST">
             <div class="form_element">
                 <label for="username">Имя пользователя:</label>
                 <br/>
@@ -25,6 +25,7 @@
         </form>
     </div>
     <br/>
-    <a href="/static/regform.html">Зарегистрироваться</>
+    <a href="/guestbook/static/regform.html">Зарегистрироваться</>
+    <a href="/guestbook/static/forgotten.html">Забыли пароль?</>
 </body>
 </html>

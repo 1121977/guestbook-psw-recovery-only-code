@@ -4,7 +4,7 @@ create table users(
                       firstname varchar_ignorecase(500) not null,
                       lastname varchar_ignorecase(500) not null,
                       enabled boolean not null,
-                      emailaddress varchar_ignorecase(500) not null
+                      emailaddress varchar_ignorecase(500) not null UNIQUE
 );
 
 create table authorities (

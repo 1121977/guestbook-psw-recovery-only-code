@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Registration Error</title>
-    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
 <body>
     <h1>Ошибка регистрации пользователя</h1>

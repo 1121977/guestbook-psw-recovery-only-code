@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.util.Assert;
+import ru.incubator.model.Guest;
 import ru.incubator.service.DbServiceNote;
 import javax.sql.DataSource;
 import java.util.Collection;
@@ -13,9 +14,11 @@ import java.util.Collection;
 public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements UserDetailsManagerExt {
 
     public static final String DEF_CREATE_USER_EXT_SQL = "insert into users (username, firstname, lastname, password, enabled, emailaddress) values (?,?,?,?,?,?)";
+    public static final String DEF_FIND_USERNAME_BY_EMAIL = "select username from users where emailaddress = ?";
     private String createUserSql = DEF_CREATE_USER_EXT_SQL;
     private String createAuthoritySql = DEF_INSERT_AUTHORITY_SQL;
     private String changePasswordSql = DEF_CHANGE_PASSWORD_SQL;
+    private String findUsernameByEmail = DEF_FIND_USERNAME_BY_EMAIL;
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private DbServiceNote dbServiceNote;
@@ -56,6 +59,11 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
         requireJdbcTemplate().update(this.changePasswordSql, newPassword, "admin");
     }
 
+    @Override
+    public void changeUserPassword(String newPassword, String userName) {
+        int number = requireJdbcTemplate().update(this.changePasswordSql, newPassword, userName);
+    }
+
     private void validateUserDetails(UserDetails user) {
         Assert.hasText(user.getUsername(), "Username may not be empty or null");
         validateAuthorities(user.getAuthorities());
@@ -85,6 +93,10 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
     public void deleteUser(String username) {
         dbServiceNote.deleteForUser(username);
         super.deleteUser(username);
+    }
+
+    public String findUserNameByEmail(String email){
+        return requireJdbcTemplate().queryForObject(findUsernameByEmail, String.class, email);
     }
 
 }

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Guest Book</title>
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/guestbook/css/index.css">
     <#setting locale="en_US">
 </head>
 <body>
     <header>
         <div></div>
         <h1>Гостевая книга УЭК</h1>
-        <form action="/logout" method="POST">
+        <form action="/guestbook/logout" method="POST">
             <button type="submit">Выйти</button>
         </form>
    </header>
@@ -28,7 +28,7 @@
                                 ${note.userName}
                             </td>
                             <td>
-                                <a href="/msg?to=${note.userName}">Отправить личное сообщение</a>
+                                <a href="/guestbook/msg?to=${note.userName}">Отправить личное сообщение</a>
                             </td>
                         </tr>
                          <tr>
@@ -42,7 +42,7 @@
         </#list>
     </table>
     <div class="form_container">
-        <form id=sendMessageForm action="/save" method="POST" modelAttribute="note">
+        <form id=sendMessageForm action="/guestbook/save" method="POST" modelAttribute="note">
             <div class="form_element">
                 <label for="message">Сообщение:</label>
                 <textarea id="message" name="message"></textarea>
