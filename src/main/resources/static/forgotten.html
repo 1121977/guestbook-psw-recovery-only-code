@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Форма восстановления пароля</title>
+    <link rel="stylesheet" href="/guestbook/css/general.css">
+</head>
+<body>
+    <h1>Заполните форму</h1>
+    <div class="form_container">
+        <form id="repair" action="/guestbook/repair" method="POST">
+            <div class="form_element">
+                <label for="email">Адрес электронной почты:</label>
+                <br/>
+                <input type="email" name="email" id="email" value="a@w" placeholder="Адрес электронной почты"/>
+            </div>
+            <input type="submit" value="Восстановить пароль" id="button">
+        </form>
+    </div>
+
+</body>
+</html>
