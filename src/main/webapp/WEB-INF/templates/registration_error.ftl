@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
 <body>
-    <h1>Ошибка регистрации пользователя</h1>
+    <div>
+        <h1>Ошибка регистрации пользователя</h1>
         <p>Логин ${username} уже занят другим пользователем.</>
         <p>Выберете другой логин.</>
+    </div>
 </body>
 </html>

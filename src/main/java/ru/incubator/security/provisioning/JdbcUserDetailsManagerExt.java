@@ -1,6 +1,8 @@
 package ru.incubator.security.provisioning;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -96,7 +98,15 @@ public class JdbcUserDetailsManagerExt extends JdbcUserDetailsManager implements
     }
 
     public String findUserNameByEmail(String email){
-        return requireJdbcTemplate().queryForObject(findUsernameByEmail, String.class, email);
+        try {
+            return requireJdbcTemplate().queryForObject(findUsernameByEmail, String.class, email);
+        } catch (DataAccessException e) {
+            if(e instanceof EmptyResultDataAccessException){
+                throw new NoSuchUserException("Don't print me.");
+            } else {
+                throw e;
+            }
+        }
     }
 
 }

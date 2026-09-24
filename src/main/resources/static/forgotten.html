@@ -6,17 +6,21 @@
     <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
 <body>
-    <h1>Заполните форму</h1>
-    <div class="form_container">
-        <form id="repair" action="/guestbook/repair" method="POST">
-            <div class="form_element">
-                <label for="email">Адрес электронной почты:</label>
-                <br/>
-                <input type="email" name="email" id="email" value="a@w" placeholder="Адрес электронной почты"/>
-            </div>
-            <input type="submit" value="Восстановить пароль" id="button">
-        </form>
+    <div>
+        <h1>Заполните форму</h1>
+        <div class="form_container">
+            <form id="repair" action="/guestbook/repair" method="POST">
+                <div class="form_element">
+                    <label for="email">Адрес электронной почты:</label>
+                    <br/>
+                    <input type="email" name="email" id="email" value="a@w" placeholder="Адрес электронной почты"/>
+                </div>
+                <input type="submit" value="Восстановить пароль" id="button">
+            </form>
+        </div>
     </div>
-
+    <div class="footer">
+        <i>Последующий за нажатием на кнопку "Восстановить пароль" переход на страницу введения нового пароля скрывает отправлерие письма с токеном, переход на страничку с токеном по ссылки в письме. Ввиду ограниченности возможностей контейнера на SkillTrack этот функционал не реализован.</i>
+    </div>
 </body>
 </html>

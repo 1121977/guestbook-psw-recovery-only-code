@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.incubator.model.Guest;
 import ru.incubator.model.Note;
 import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
+import ru.incubator.security.provisioning.NoSuchUserException;
 import ru.incubator.service.DbServiceNote;
 import ru.incubator.service.PasswordResetService;
 
@@ -106,8 +107,24 @@ public class GuestBookController {
         return new RedirectView("/logout");
     }
 
+    /*
+     * Логика промышленной функции repair(String email) должна быть реализована иначе. Она должна возвращать String для
+     * формирования странички на основании шаблона freemarker (в данной реализации сервиса) с содержимым что-то типа
+     * "На указанный Вами e-mail ${emailadress} отправлено письмо со ссылкой для сброса пароля". Метод createResetToken(email)
+     * должен быть помечен @Async, что определяет константное время выполнение этого метода.
+     *
+        @RequestMapping(value = "/repair", method = RequestMethod.POST)
+        public String repair(@RequestParam("email") String email) {
+            passwordResetService.createResetToken(email);
+            return "email_send";
+        }
+    *
+    * Именно такой выбор для упражнения обусловлен невозможностью использования сервиса электронной почты на платформе
+    * SkillTrack.
+
+     */
     @RequestMapping(value = "/repair", method = RequestMethod.POST)
-    public RedirectView repair(@RequestParam("email") String email, ModelMap modelMap) {
+    public RedirectView repair(@RequestParam("email") String email) {
         return new RedirectView(String.format("/token?token=%s&email=%s", passwordResetService.createResetToken(email), email), true);
     }
 
@@ -123,7 +140,12 @@ public class GuestBookController {
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
     public String reset_password(@RequestParam("token") String token, @RequestParam("email") String email, @RequestParam("password1") String password, ModelMap modelMap) {
-        String username =  ((JdbcUserDetailsManagerExt) userDetailsService).findUserNameByEmail(email);
+        String username;
+        try {
+            username = ((JdbcUserDetailsManagerExt) userDetailsService).findUserNameByEmail(email);
+        } catch (NoSuchUserException e){
+            return "login";
+        }
         if (passwordResetService.verifyToken(email, token)) {
             ((JdbcUserDetailsManagerExt) userDetailsService).changeUserPassword(String.format("{bcrypt}%s", new BCryptPasswordEncoder().encode(password)), username);
             passwordResetService.deleteToken(email);

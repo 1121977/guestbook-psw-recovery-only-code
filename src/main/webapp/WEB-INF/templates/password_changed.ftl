@@ -6,7 +6,9 @@
     <link rel="stylesheet" href="/guestbook/css/general.css">
 </head>
 <body>
-    <h1>Сброс и изменение пароля</h1>
-    <p id="registration_info">Пароль пользователю с адресом электронной почты <b>${email}</b> изменён.</>
+    <div>
+        <h1>Сброс и изменение пароля</h1>
+        <p id="registration_info">Пароль пользователю с адресом электронной почты <b>${email}</b> изменён.</>
+    </div>
 </body>
 </html>
