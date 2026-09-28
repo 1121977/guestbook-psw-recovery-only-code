@@ -16,11 +16,9 @@ public class NoteDaoImpl extends DaoImpl<Note> implements NoteDao
     @Override
     public List<Note> findForUser(String userName) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         List<Note> list = session.createQuery("select note from " + entityClass.getName() + " note where note.recipient is NULL or note.recipient = :userName or note.userName = :userName", entityClass)
                 .setParameter("userName", userName)
                 .getResultList();
-        tx.commit();
         session.close();
         return list;
     }
@@ -31,11 +29,9 @@ public class NoteDaoImpl extends DaoImpl<Note> implements NoteDao
             return 0;
         }
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         int deletedNotes = session.createMutationQuery("delete from " + entityClass.getName() + " where userName = :user or recipient = :user")
                 .setParameter("user", userName)
                 .executeUpdate();
-        tx.commit();
         session.close();
         return deletedNotes;
     }

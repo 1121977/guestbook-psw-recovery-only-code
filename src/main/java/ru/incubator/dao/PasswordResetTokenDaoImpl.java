@@ -17,11 +17,11 @@ public class PasswordResetTokenDaoImpl extends DaoImpl<PasswordResetToken> imple
     @Override
     public PasswordResetToken findPasswordResetToken(String email) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+//        Transaction tx = session.beginTransaction();
         PasswordResetToken passwordResetToken = session.createQuery("select token from " + entityClass.getName() + " token where token.userEmail = :email", entityClass)
                 .setParameter("email", email)
                 .getSingleResult();
-        tx.commit();
+//        tx.commit();
         session.close();
         return passwordResetToken;
     }
@@ -29,11 +29,11 @@ public class PasswordResetTokenDaoImpl extends DaoImpl<PasswordResetToken> imple
     @Override
     public int deletePasswordResetToken(String email) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+//        Transaction tx = session.beginTransaction();
         int deletedTokens = session.createMutationQuery("delete from " + entityClass.getName() + " token where token.userEmail = :email")
                 .setParameter("email", email)
                 .executeUpdate();
-        tx.commit();
+//        tx.commit();
         session.close();
         return deletedTokens;
     }
@@ -41,11 +41,11 @@ public class PasswordResetTokenDaoImpl extends DaoImpl<PasswordResetToken> imple
     @Override
     public long getCountPasswordResetTokenFor(String email) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+//        Transaction tx = session.beginTransaction();
         long count = session.createQuery("select count(*) from " + entityClass.getName() + " t where t.userEmail = :email", Long.class)
                 .setParameter("email", email)
                 .getSingleResult();
-        tx.commit();
+//        tx.commit();
         session.close();
         return count;
     }
