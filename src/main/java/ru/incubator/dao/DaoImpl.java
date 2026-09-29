@@ -2,7 +2,6 @@ package ru.incubator.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import java.util.List;
 
 public abstract class DaoImpl<T> implements Dao<T> {
@@ -17,18 +16,16 @@ public abstract class DaoImpl<T> implements Dao<T> {
 
     @Override
     public long save(T t) {
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         session.persist(t);
         session.flush();
-        session.close();
         return 0;
     }
 
     @Override
     public List<T> findAll() {
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         List<T> list = session.createQuery("select p from " + entityClass.getName() + " p", entityClass).getResultList();
-        session.close();
         return list;
     }
 
