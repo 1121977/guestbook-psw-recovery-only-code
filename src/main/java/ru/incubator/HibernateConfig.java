@@ -3,6 +3,7 @@ package ru.incubator;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.hibernate.SessionFactory;
+import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -100,8 +101,13 @@ public class HibernateConfig {
     }
 
     @Bean
-    public static PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
+    public static PersistenceExceptionTranslationPostProcessor exceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor() {
+            @Override
+            protected boolean isEligible(Object bean, String beanName) {
+                String beanPackage = bean.getClass().getPackageName();
+                return beanPackage.startsWith("ru.incubator.dao");
+            }
+        };
     }
-
 }

@@ -1,5 +1,6 @@
 package ru.incubator.service;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.incubator.dao.NoteDao;
 import ru.incubator.model.Note;
@@ -16,7 +17,11 @@ public class DbServiceNoteImpl implements DbServiceNote {
 
     @Override
     public long saveNote(Note note) {
-        this.noteDao.save(note);
+        try {
+            this.noteDao.save(note);
+        } catch (DataAccessException e){
+            throw new DbServiceException(e);
+        }
         return note.getId();
     }
 

@@ -17,6 +17,7 @@ import ru.incubator.model.Guest;
 import ru.incubator.model.Note;
 import ru.incubator.security.provisioning.JdbcUserDetailsManagerExt;
 import ru.incubator.security.provisioning.NoSuchUserException;
+import ru.incubator.service.DbServiceException;
 import ru.incubator.service.DbServiceNote;
 import ru.incubator.service.PasswordResetService;
 
@@ -60,7 +61,11 @@ public class GuestBookController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public RedirectView saveMessage(@ModelAttribute Note note) {
         note.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-        dbServiceNote.saveNote(note);
+        try {
+            dbServiceNote.saveNote(note);
+        } catch (DbServiceException e) {
+            return new RedirectView("/", true);
+        }
         return new RedirectView("/", true);
     }
 
@@ -69,7 +74,11 @@ public class GuestBookController {
         String recipient = note.getRecipient();
         if (recipient != null && ((JdbcUserDetailsManager) userDetailsService).userExists(recipient)) {
             note.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-            dbServiceNote.saveNote(note);
+            try {
+                dbServiceNote.saveNote(note);
+            } catch (DbServiceException e) {
+                return new RedirectView(String.format("/msg?to=%s", recipient), true);
+            }
         }
         return new RedirectView("/", true);
     }
@@ -130,12 +139,16 @@ public class GuestBookController {
 
     @RequestMapping(value = "/token", method = RequestMethod.GET)
     public String receiveToken(@RequestParam("token") String token, ModelMap modelMap, @RequestParam("email") String email) {
-        if (passwordResetService.verifyToken(email, token)) {
-            modelMap.put("token", token);
-            modelMap.put("email", email);
-            return "token_check";
+        try{
+            if (passwordResetService.verifyToken(email, token)) {
+                modelMap.put("token", token);
+                modelMap.put("email", email);
+                return "token_check";
+            }
+        } catch (DbServiceException e) {
+            return "login";
         }
-        return "";
+        return "login";
     }
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)

@@ -1,5 +1,6 @@
 package ru.incubator.service;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.incubator.dao.PasswordResetTokenDao;
 import ru.incubator.model.PasswordResetToken;
@@ -20,11 +21,15 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 
     @Override
     public boolean verifyToken(String email, String incomingToken) {
-        PasswordResetToken token = passwordResetTokenDao.findPasswordResetToken(email);
-        if(token == null || token.isExpired()) {
-            return false;
+        try{
+            PasswordResetToken token = passwordResetTokenDao.findPasswordResetToken(email);
+            if(token == null || token.isExpired()) {
+                return false;
+            }
+            return token.getToken().equals(incomingToken);
+        } catch (DataAccessException e){
+            throw new DbServiceException(e);
         }
-        return token.getToken().equals(incomingToken);
     }
 
 /*
