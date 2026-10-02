@@ -57,7 +57,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
         }
         PasswordResetToken passwordResetToken = new PasswordResetToken(UUID.randomUUID().toString(), email, resetPasswordTokenDuration);
         passwordResetTokenDao.save(passwordResetToken);
-        return passwordResetToken.getToken();
+        return passwordResetToken.getToken() + "  ";
     }
 
     @Override
